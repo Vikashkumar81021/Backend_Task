@@ -12,5 +12,6 @@ const config = {
   JWT_ACCESS_TOKEN_EXPIRY: process.env.JWT_ACCESS_TOKEN_EXPIRY,
   JWT_REFRESH_TOKEN: process.env.JWT_REFRESH_TOKEN,
   JWT_REFRESH_TOKEN_EXPIRY: process.env.JWT_REFRESH_TOKEN_EXPIRY,
+  BCRYPT_ROUNDS: Number(process.env.BCRYPT_ROUNDS),
 };
 export { config };

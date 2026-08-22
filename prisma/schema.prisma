@@ -12,11 +12,108 @@ datasource db {
   provider = "postgresql"
 }
 
-model User{
-  id           Int
+
+enum OrgRole {
+  org_admin
+  member
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  review
+  done
+}
+
+enum Priority {
+  low
+  medium
+  high
+  urgent
+}
+model User {
+  id           Int          @id @default(autoincrement())
   name         String
-  email        String     @unique
+  email        String       @unique
   password     String
-  org_members  String
- 
+
+  memberships  OrgMember[]
+  refreshTokens RefreshToken[]
+  comments     Comment[]
+  assignments  TaskAssignment[]
+}
+
+model Organization {
+  id           Int          @id @default(autoincrement())
+  orgName      String
+
+  members      OrgMember[]
+  projects     Project[]
+}
+
+model OrgMember {
+  id             Int          @id @default(autoincrement())
+  userId         Int
+  organizationId Int
+  role           OrgRole
+
+  user           User         @relation(fields: [userId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([userId, organizationId])
+}
+
+model Project {
+  id             Int          @id @default(autoincrement())
+  name           String
+  organizationId Int
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  tasks          Task[]
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  status      TaskStatus
+  priority    Priority
+  dueDate     DateTime?
+
+  projectId   Int
+
+  project     Project          @relation(fields: [projectId], references: [id])
+  assignments TaskAssignment[]
+  comments    Comment[]
+}
+
+model TaskAssignment {
+  id        Int @id @default(autoincrement())
+  taskId    Int
+  userId    Int
+
+  task      Task @relation(fields: [taskId], references: [id])
+  user      User @relation(fields: [userId], references: [id])
+
+  @@unique([taskId, userId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  taskId    Int
+  userId    Int
+
+  task      Task     @relation(fields: [taskId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  revoked   Boolean  @default(false)
+  expiresAt DateTime
+
+  user      User     @relation(fields: [userId], references: [id])
 }

@@ -1,4 +1,4 @@
-import { STATUS_CODE } from "../constans/status.code";
+import { STATUS_CODE } from "../constant/status.code.ts";
 class ApiError extends Error {
   statusCode: number;
   code: string;

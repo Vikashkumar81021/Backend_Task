@@ -1,5 +1,6 @@
 import express from "express";
 import helmet from "helmet";
+import { reqLogger } from "./middlewares/req.middlewares.ts";
 
 const app = express();
 
@@ -11,5 +12,5 @@ app.use(
     xDownloadOptions: false,
   }),
 );
-
+app.use(reqLogger);
 export default app;

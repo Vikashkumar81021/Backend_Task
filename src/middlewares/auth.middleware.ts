@@ -1,14 +1,17 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
 import { config } from "../config/configuration.ts";
 import { ERROR_MESSAGE } from "../constant/error.ts";
+import { STATUS_CODE } from "../constant/status.code.ts";
+import { findByUserId } from "../repositories/auth.repositorie.ts";
+import { findMembershipByUserId } from "../repositories/org.repository.ts";
+import { logger } from "../config/logger.ts";
 
 interface AuthPayload {
   userId: number;
 }
 
-export const authMiddleware = (
+export const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -17,7 +20,11 @@ export const authMiddleware = (
     const accessToken = req.cookies.accessToken;
 
     if (!accessToken) {
-      throw new Error(ERROR_MESSAGE.TOKEN_MISSING);
+      return res.status(STATUS_CODE.UNAUTHORIZED).json({
+        success: false,
+        error: ERROR_MESSAGE.TOKEN_MISSING,
+        code: "TOKEN_MISSING",
+      });
     }
 
     const decoded = jwt.verify(
@@ -26,18 +33,47 @@ export const authMiddleware = (
     ) as AuthPayload;
 
     if (!decoded.userId) {
-      throw new Error(ERROR_MESSAGE.INVALID_TOKEN);
+      return res.status(STATUS_CODE.UNAUTHORIZED).json({
+        success: false,
+        error: ERROR_MESSAGE.INVALID_TOKEN,
+        code: "INVALID_TOKEN",
+      });
+    }
+    const user = await findByUserId(decoded.userId);
+
+    if (!user) {
+      return res.status(STATUS_CODE.UNAUTHORIZED).json({
+        success: false,
+        error: ERROR_MESSAGE.UNAUTHORIZED,
+        code: "UNAUTHORIZED",
+      });
+    }
+    const membership = await findMembershipByUserId(decoded.userId);
+
+    if (!membership) {
+      return res.status(STATUS_CODE.FORBIDDEN).json({
+        success: false,
+        error: "User is not a member of any organization",
+        code: "ORG_MEMBERSHIP_NOT_FOUND",
+      });
     }
 
     req.user = {
       userId: decoded.userId,
+      organizationId: membership.organizationId,
+      role: membership.role,
     };
 
     next();
   } catch (error) {
-    return res.status(401).json({
+    logger.warn("Authentication failed", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+
+    return res.status(STATUS_CODE.UNAUTHORIZED).json({
       success: false,
       message: ERROR_MESSAGE.INVALID_TOKEN,
+      code: "INVALID_TOKEN",
     });
   }
 };

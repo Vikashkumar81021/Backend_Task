@@ -2,7 +2,6 @@ services:
   backend:
     build: .
     container_name: taskflow-backend
-    restart: always
     ports:
       - "5000:5000"
     env_file:
@@ -10,40 +9,35 @@ services:
     depends_on:
       - postgres
       - redis
+    restart: unless-stopped
 
   postgres:
-    image: postgres:17
+    image: postgres:16-alpine
     container_name: taskflow-postgres
-    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: taskflow
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
     container_name: taskflow-redis
-    restart: always
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
+    restart: unless-stopped
 
   pgadmin:
     image: dpage/pgadmin4
     container_name: taskflow-pgadmin
-    restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@123.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
-    ports:
-      - "5050:80"
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - postgres
+    restart: unless-stopped
 
 volumes:
   postgres_data:

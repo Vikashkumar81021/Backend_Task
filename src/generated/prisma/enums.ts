@@ -9,7 +9,29 @@
 * 🟢 You can import this file directly.
 */
 
+export const OrgRole = {
+  org_admin: 'org_admin',
+  member: 'member'
+} as const
+
+export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const TaskStatus = {
+  todo: 'todo',
+  in_progress: 'in_progress',
+  review: 'review',
+  done: 'done'
+} as const
+
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
+
+
+export const Priority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+  urgent: 'urgent'
+} as const
+
+export type Priority = (typeof Priority)[keyof typeof Priority]

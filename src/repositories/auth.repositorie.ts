@@ -1,5 +1,5 @@
 import prisma from "../config/database.ts";
-
+import { hashToken } from "../utils/token.ts";
 export const findUserByEmail = async (email: string) => {
   return await prisma.user.findUnique({
     where: {
@@ -22,10 +22,11 @@ export const registerUser = async (
   });
 };
 export const createRefreshToken = async (userId: number, token: string) => {
+  const tokenHash = hashToken(token);
   return await prisma.refreshToken.create({
     data: {
       userId,
-      token,
+      token: tokenHash,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
   });
@@ -39,17 +40,18 @@ export const findByUserId = async (id: number) => {
   });
 };
 export const findRefreshToken = async (token: string) => {
+  const tokenHash = hashToken(token);
   return await prisma.refreshToken.findUnique({
     where: {
-      token,
+      token: tokenHash,
     },
   });
 };
-
 export const revokeRefreshToken = async (token: string) => {
+  const tokenHash = hashToken(token);
   return prisma.refreshToken.updateMany({
     where: {
-      token,
+      token: tokenHash,
       revoked: false,
     },
     data: {

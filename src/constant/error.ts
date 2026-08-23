@@ -17,5 +17,5 @@ export const ERROR_MESSAGE = {
   SCHEMA_VALIDATION_FAILED: "Schema validation failed",
   MISSING_REQUIRED_FIELD_DATA: "Mandatory fields missing",
   INVALID_OPERATION: "Invalid operation",
-  TOO_MANY_REQUESTS: "Too many requests",
+  TOO_MANY_REQUESTS: "Too many requests, please try again later",
 };

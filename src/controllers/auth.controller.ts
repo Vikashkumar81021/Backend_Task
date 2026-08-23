@@ -65,6 +65,7 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
 export const refreshToken = asyncHandler(
   async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken;
+    console.log("token", token);
 
     const accessToken = await refreshTokenService(token);
 
@@ -83,7 +84,6 @@ export const refreshToken = asyncHandler(
 );
 export const userLogout = asyncHandler(async (req: Request, res: Response) => {
   const token = req.cookies.refreshToken;
-  console.log("token  is", token);
 
   if (token) {
     await revokeRefreshToken(token);

@@ -92,6 +92,7 @@ export const userLoginService = async ({ email, password }: LoginUserInput) => {
       expiresIn: config.JWT_REFRESH_EXPIRES_IN as StringValue,
     },
   );
+  await createRefreshToken(user.id, refreshToken);
   const { password: _, ...userResponse } = user;
 
   return {

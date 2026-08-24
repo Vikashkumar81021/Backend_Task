@@ -1,5 +1,7 @@
 import { Job, Worker } from "bullmq";
-import redis from "../config/redis.ts";
+import { Redis } from "ioredis";
+
+import { config } from "../config/configuration.ts";
 import { deadLetterQueue } from "../queues/email.queue.ts";
 
 interface TaskAssignedPayload {
@@ -15,6 +17,7 @@ const processEmailJob = async (job: Job<TaskAssignedPayload>) => {
 
   console.log(`
     📧 Sending email
+
     To: ${userEmail}
     Subject: Task Assigned
     Task: ${taskTitle}
@@ -27,8 +30,12 @@ const processEmailJob = async (job: Job<TaskAssignedPayload>) => {
   };
 };
 
+const workerRedis = new Redis(config.REDIS_URL, {
+  maxRetriesPerRequest: null,
+});
+
 export const emailWorker = new Worker("email-queue", processEmailJob, {
-  connection: redis,
+  connection: workerRedis,
   concurrency: 5,
 });
 

@@ -1,37 +1,8 @@
-# Dependencies
-node_modules/
-
-# Git
-.git/
+node_modules
+dist
+.git
 .gitignore
-        
-# Environment
 .env
-.env.*
-!.env.example
-
-# Build
-dist/
-build/
-
-# Logs
-*.log
-logs/
-
-# Testing
-coverage/
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Temporary
-tmp/
-temp/
-
-# Docker
-docker-compose.override.yml
+.env.\*
+npm-debug.log
+coverage

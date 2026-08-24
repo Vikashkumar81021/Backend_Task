@@ -117,3 +117,13 @@ model RefreshToken {
 
   user      User     @relation(fields: [userId], references: [id])
 }
+model OutboxEvent {
+  id        Int      @id @default(autoincrement())
+  type      String
+  payload   Json
+  jobId     String?  @unique
+  processed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([processed, createdAt])
+}

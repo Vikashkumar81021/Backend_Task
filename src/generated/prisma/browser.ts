@@ -57,3 +57,8 @@ export type Comment = Prisma.CommentModel
  * 
  */
 export type RefreshToken = Prisma.RefreshTokenModel
+/**
+ * Model OutboxEvent
+ * 
+ */
+export type OutboxEvent = Prisma.OutboxEventModel

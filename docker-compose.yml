@@ -1,7 +1,7 @@
 services:
-  backend:
+  api:
     build: .
-    container_name: taskflow-backend
+    container_name: taskflow-api
     ports:
       - "5000:5000"
     env_file:
@@ -9,6 +9,17 @@ services:
     depends_on:
       - postgres
       - redis
+    restart: unless-stopped
+
+  worker:
+    build: .
+    container_name: taskflow-worker
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    command: npm run worker
     restart: unless-stopped
 
   postgres:
@@ -27,16 +38,6 @@ services:
     container_name: taskflow-redis
     volumes:
       - redis_data:/data
-    restart: unless-stopped
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: taskflow-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    depends_on:
-      - postgres
     restart: unless-stopped
 
 volumes:

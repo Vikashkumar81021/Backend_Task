@@ -1,5 +1,6 @@
 import express from "express";
 import helmet from "helmet";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import { reqLogger } from "./middlewares/req.middlewares.ts";
 import { authRoutes } from "./routes/auth.route.ts";
@@ -10,6 +11,12 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.ts";
 const app = express();
 
+app.use(
+  cors({
+    origin: ["https://backend-task-acdd.onrender.com"],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(

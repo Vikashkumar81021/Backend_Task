@@ -15,12 +15,23 @@ import {
   unassignUserFromTaskController,
   updateTaskController,
 } from "../controllers/task.controller.ts";
+import { requireRole } from "../middlewares/role.middleware.ts";
 
 const taskRoutes = Router();
-taskRoutes.post("/", authMiddleware, taskController);
+taskRoutes.post(
+  "/",
+  authMiddleware,
+  requireRole("org_admin", "member"),
+  taskController,
+);
 taskRoutes.get("/", authMiddleware, getTaskController);
 taskRoutes.patch("/:id", authMiddleware, updateTaskController);
-taskRoutes.delete("/tasks/:id", authMiddleware, deleteTaskController);
+taskRoutes.delete(
+  "/tasks/:id",
+  authMiddleware,
+  requireRole("org_admin"),
+  deleteTaskController,
+);
 taskRoutes.get("/filter/status", authMiddleware, statusFilterController);
 taskRoutes.get("/filter/priority", authMiddleware, priorityFilterController);
 taskRoutes.post("/:taskId/assign", authMiddleware, assignUserToTaskController);

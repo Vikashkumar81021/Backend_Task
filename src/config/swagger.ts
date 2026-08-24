@@ -12,7 +12,7 @@ const swaggerOptions = {
 
     servers: [
       {
-        url: "http://localhost:5000/api/v1",
+        url: "https://backend-task-acdd.onrender.com",
         description: "Local server",
       },
     ],

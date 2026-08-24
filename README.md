@@ -612,7 +612,7 @@ Redis
 Email Worker
 ```
 
-The API does not perform email processing synchronously.
+
 
 ---
 

@@ -56,7 +56,8 @@ export const userRegister = asyncHandler(
       sameSite: "lax",
       maxAge: 15 * 60 * 1000,
     });
-
+    // Agar tum chahte ho: Browser close → dobara browser open → login dobara karna pade
+    //ANS:- MaxAge HTA  DOO
     res.cookie("refreshToken", registerUser.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

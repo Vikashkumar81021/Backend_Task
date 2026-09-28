@@ -612,8 +612,6 @@ Redis
 Email Worker
 ```
 
-
-
 ---
 
 # Transactional Outbox Strategy
